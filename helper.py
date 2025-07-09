@@ -4,22 +4,23 @@ import cv2
 import numpy as np
 import re
 from deepface import DeepFace
-
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 import os
+
+# Tesseract setup
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 os.environ["TESSDATA_PREFIX"] = r"C:\Program Files\Tesseract-OCR\tessdata"
 
 def extract_dob(image_file):
     img = Image.open(image_file)
     text = pytesseract.image_to_string(img)
-    
-    # Try to find a date-like pattern
+
+    # Find DOB using regex
     dob = None
     match = re.search(r'(\d{2}[/-]\d{2}[/-]\d{4})', text)
     if match:
         dob = match.group(1).replace('/', '-')
 
-    # Convert to OpenCV image and extract face
+    # Convert to OpenCV and extract face
     img_cv = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
     face_img = extract_face(img_cv)
 
